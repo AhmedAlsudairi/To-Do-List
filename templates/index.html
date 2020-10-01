@@ -4,10 +4,31 @@
         <title>To Do App</title>
     </head>
     <body>
+        <form method="post" action="/todos/create">
+            <input type="text" name="description" id="text" />
+            <input type="submit" value="Create" id="sub"/>
+          </form>
         <ul>
             {%for d in data%}
             <li>{{d.describtion}}</li>
             {%endfor%}
         </ul>
     </body>
+    <script>
+        var submitBtn= document.getElementById('sub');
+        submitBtn.addEventListener('click',onSubmit);
+        async function onSubmit(event){
+            var submitValue= document.getElementById('text').value;
+            event.preventDefualt()
+            fetch('/todos/create',{
+                method: 'post',
+                body: JSON.stringify({
+                    description: submitValue
+                }),
+                headers: {
+                    'Content-Type': 'application/json'
+  }
+            });
+        }
+    </script>
 </html>

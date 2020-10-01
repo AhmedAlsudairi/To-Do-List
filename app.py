@@ -1,4 +1,4 @@
-from flask import Flask, render_template
+from flask import Flask, render_template,request,redirect,url_for
 from  flask_sqlalchemy import SQLAlchemy
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'postgres://postgres:admin@localhost:5432/todoapp'
@@ -18,6 +18,13 @@ db.create_all()
 def index():
     return render_template('index.html',data=ToDo.query.all())
 
+@app.route('/todos/create', methods=['POST'])
+def create_todo():
+    description= request.form.get('description')
+    toDoItem=ToDo(describtion=description)
+    db.session .add(toDoItem)
+    db.session.commit()
+    return redirect(url_for('index'))
 if __name__ == '__main__':
     app.debug = True
     app.run()        
