@@ -4,30 +4,41 @@
         <title>To Do App</title>
     </head>
     <body>
-        <form method="post" action="/todos/create">
-            <input type="text" name="description" id="text" />
-            <input type="submit" value="Create" id="sub"/>
+        <form id="sub">
+            <input type="text" name="describtion" id="text" />
+            <input type="submit" value="Create" />
           </form>
-        <ul>
+        <ul id="todos">
             {%for d in data%}
             <li>{{d.describtion}}</li>
             {%endfor%}
         </ul>
     </body>
     <script>
-        var submitBtn= document.getElementById('sub');
-        submitBtn.addEventListener('click',onSubmit);
-        async function onSubmit(event){
+        document.getElementById('sub').onsubmit=onSubmit;
+        
+        function onSubmit(event){
+            event.preventDefault();
             var submitValue= document.getElementById('text').value;
-            event.preventDefualt()
+            
             fetch('/todos/create',{
-                method: 'post',
+                method: 'POST',
                 body: JSON.stringify({
-                    description: submitValue
+                    describtion: submitValue
                 }),
                 headers: {
                     'Content-Type': 'application/json'
   }
+            }).then(function(response){
+                return response.json();
+            }).then(function(jsonRes){
+            console.log('response', jsonRes);
+          li = document.createElement('li');
+          li.innerText = jsonRes.describtion;
+          document.getElementById('todos').appendChild(li);
+
+            }).catch(function(){
+                alert('something went wrong!')
             });
         }
     </script>

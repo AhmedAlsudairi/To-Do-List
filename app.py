@@ -1,4 +1,4 @@
-from flask import Flask, render_template,request,redirect,url_for
+from flask import Flask, render_template,request,redirect,url_for,jsonify
 from  flask_sqlalchemy import SQLAlchemy
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'postgres://postgres:admin@localhost:5432/todoapp'
@@ -20,11 +20,13 @@ def index():
 
 @app.route('/todos/create', methods=['POST'])
 def create_todo():
-    description= request.form.get('description')
-    toDoItem=ToDo(describtion=description)
-    db.session .add(toDoItem)
+    describtion= request.get_json()['describtion']
+    toDoItem=ToDo(describtion=describtion)
+    db.session.add(toDoItem)
     db.session.commit()
-    return redirect(url_for('index'))
+    return jsonify({
+        'describtion': toDoItem.describtion
+    })
 if __name__ == '__main__':
     app.debug = True
     app.run()        
