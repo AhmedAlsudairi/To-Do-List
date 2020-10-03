@@ -1,10 +1,12 @@
 from flask import Flask, render_template,request,redirect,url_for,jsonify, abort
 from  flask_sqlalchemy import SQLAlchemy
+from flask_migrate import Migrate
 import sys
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'postgres://postgres:admin@localhost:5432/todoapp'
 db = SQLAlchemy(app)
 
+migrate = Migrate(app,db)
 class ToDo(db.Model):
     __tablename__ = 'todos'
     id= db.Column(db.Integer,primary_key=True)
@@ -13,7 +15,7 @@ class ToDo(db.Model):
     def __repr__(self):
         return '<Item {self.id} {self.describtion}>'
 
-db.create_all()
+
 
 @app.route('/')
 def index():
