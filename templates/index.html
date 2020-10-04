@@ -8,6 +8,11 @@
                 padding: 5;
                 margin: 5;
             }
+            .cross{
+                color: red;
+                cursor: pointer;
+                margin-left: 100px;
+            }
         </style>
     </head>
     <body>
@@ -17,12 +22,16 @@
           </form>
         <ul id="todos" class="list">
             {%for d in data%}
-            <li><input id="{{d.id}}" class="check-completed" type="checkbox" {% if d.completed %} checked {% endif %} />{{d.describtion}}</li>
+            <li>
+                <input id="{{d.id}}" class="check-completed" type="checkbox" {% if d.completed %} checked {% endif %} />
+                {{d.describtion}}
+                <button id="{{d.id}}" class="cross">&cross;</button>
+            </li>
             {%endfor%}
         </ul>
     </body>
     <script>
-        document.getElementById('sub').onsubmit=onSubmit;
+        
         const checkList = document.querySelectorAll('.check-completed');
         for(let i=0;i<checkList.length;i++){
             const checkItem = checkList[i];
@@ -40,6 +49,19 @@
                 })
             }
         }
+
+        const deleteList = document.querySelectorAll('.cross');
+        for(let i=0;i<deleteList.length;i++){
+            const deleteItem = deleteList[i];
+            deleteItem.onclick = function(e){
+                const deleteId = e.target.id;
+                fetch('/todos/'+deleteId+'/delete',{
+                    method: 'DELETE'
+                })
+            }
+        }
+        
+        document.getElementById('sub').onsubmit=onSubmit;
         function onSubmit(event){
             event.preventDefault();
             var submitValue= document.getElementById('text').value;
