@@ -2,21 +2,44 @@
 <html>
     <head>
         <title>To Do App</title>
+        <style>
+            .list{
+                list-style: none;
+                padding: 5;
+                margin: 5;
+            }
+        </style>
     </head>
     <body>
         <form id="sub">
             <input type="text" name="describtion" id="text" />
             <input type="submit" value="Create" />
           </form>
-        <ul id="todos">
+        <ul id="todos" class="list">
             {%for d in data%}
-            <li>{{d.describtion}}</li>
+            <li><input id="{{d.id}}" class="check-completed" type="checkbox" {% if d.completed %} checked {% endif %} />{{d.describtion}}</li>
             {%endfor%}
         </ul>
     </body>
     <script>
         document.getElementById('sub').onsubmit=onSubmit;
-        
+        const checkList = document.querySelectorAll('.check-completed');
+        for(let i=0;i<checkList.length;i++){
+            const checkItem = checkList[i];
+            checkItem.onchange = function(e){
+                const checkValue = e.target.checked;
+                const checkId = e.target.id;
+                fetch('/todos/'+checkId+'/set-completed',{
+                    method: 'POST',
+                    body: JSON.stringify({
+                        'completed' : checkValue
+                    }),
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                })
+            }
+        }
         function onSubmit(event){
             event.preventDefault();
             var submitValue= document.getElementById('text').value;

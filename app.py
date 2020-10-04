@@ -11,6 +11,7 @@ class ToDo(db.Model):
     __tablename__ = 'todos'
     id= db.Column(db.Integer,primary_key=True)
     describtion=db.Column(db.String(),nullable=False)
+    completed=db.Column(db.Boolean,nullable=False,default=False)
 
     def __repr__(self):
         return '<Item {self.id} {self.describtion}>'
@@ -19,7 +20,7 @@ class ToDo(db.Model):
 
 @app.route('/')
 def index():
-    return render_template('index.html',data=ToDo.query.all())
+    return render_template('index.html',data=ToDo.query.order_by('id').all())
 
 @app.route('/todos/create', methods=['POST'])
 def create_todo():
@@ -38,6 +39,19 @@ def create_todo():
         return jsonify({
             'describtion': body
         })
+
+@app.route('/todos/<todo_id>/set-completed',methods=['POST'])
+def setCompleted(todo_id):
+    try:
+        completed = request.get_json()['completed']
+        todo_item = ToDo.query.get(todo_id)
+        todo_item.completed = completed
+        db.session.commit()        
+    except:
+        db.session.rollback()
+    finally:
+        db.session.close()
+    return redirect(url_for('index'))            
 if __name__ == '__main__':
     app.debug = True
     app.run()        
