@@ -25,7 +25,14 @@ class ToDoList(db.Model):
 
 @app.route('/')
 def index():
-    return render_template('index.html',data=ToDo.query.order_by('id').all())
+    return redirect(url_for('get_todo_lists', list_id=1)) 
+
+@app.route('/<list_id>')
+def get_todo_lists(list_id):
+    return render_template('index.html',
+    todos=ToDo.query.filter_by(list_id=list_id).order_by('id').all(),
+    lists=ToDoList.query.order_by('id').all(),
+    active_list=ToDoList.query.filter_by(id=list_id).first().name)
 
 @app.route('/todos/create', methods=['POST'])
 def create_todo():

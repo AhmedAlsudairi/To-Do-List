@@ -21,22 +21,44 @@
         cursor: pointer;
         font-size: 20px;
       }
+      .lists-wrapper, .todos-wrapper {
+        display: inline-block;
+        vertical-align: top;
+      }
         </style>
     </head>
     <body>
-        <form id="sub">
+        <div class="lists-wrapper">
+            <form id="sub">
             <input type="text" name="describtion" id="text" />
             <input type="submit" value="Create" />
           </form>
         <ul id="todos" class="list">
-            {%for d in data%}
+            {%for list in lists%}
             <li>
-                <input id="{{d.id}}" class="check-completed" type="checkbox" {% if d.completed %} checked {% endif %} />
-                {{d.describtion}}
-                <button id="{{d.id}}" class="cross">&cross;</button>
+                <a href="/{{list.id}}" >{{list.name}} </a>
             </li>
             {%endfor%}
         </ul>
+        </div>
+        
+        <div class="lists-wrapper">
+            <h4>{{active_list}}</h4>
+            <form id="sub">
+            <input type="text" name="describtion" id="text" />
+            <input type="submit" value="Create" />
+          </form>
+        <ul id="todos" class="list">
+            {%for todo in todos%}
+            <li>
+                <input id="{{todo.id}}" class="check-completed" type="checkbox" {% if todo.completed %} checked {% endif %} />
+                {{todo.describtion}}
+                <button id="{{todo.id}}" class="cross">&cross;</button>
+            </li>
+            {%endfor%}
+        </ul>
+        </div>
+        
     </body>
     <script>
         
